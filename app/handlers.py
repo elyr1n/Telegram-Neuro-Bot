@@ -118,7 +118,9 @@ async def unban_user_command(message: Message):
 
     unban_user(target_id)
 
-    await message.answer(f"*Пользователь* с ID {target_id} *разблокирован*.")
+    await message.answer(
+        f"*Пользователь* с ID {target_id} *разблокирован*.", parse_mode="Markdown"
+    )
 
 
 @router.message(Command("clear"))
