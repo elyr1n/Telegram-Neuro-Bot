@@ -28,7 +28,7 @@ class Generate(StatesGroup):
     text = State()
 
 
-ADMIN_CHAT_ID = int(os.getenv("CHAT_ID"))
+ADMIN_CHAT_IDS = [int(id) for id in os.getenv("CHAT_IDS").split(", ")]
 
 
 @router.message(CommandStart())
@@ -61,7 +61,7 @@ async def generate_text_error(message: Message):
 @router.message(Command("ban"))
 async def ban_user_command(message: Message):
     user_id = message.from_user.id
-    if user_id != ADMIN_CHAT_ID:
+    if user_id not in ADMIN_CHAT_IDS:
         await message.answer(
             "*У вас нет прав для блокировки пользователей.*", parse_mode="Markdown"
         )
@@ -97,7 +97,7 @@ async def ban_user_command(message: Message):
 @router.message(Command("unban"))
 async def unban_user_command(message: Message):
     user_id = message.from_user.id
-    if user_id != ADMIN_CHAT_ID:
+    if user_id not in ADMIN_CHAT_IDS:
         await message.answer(
             "*У вас нет прав для разблокировки пользователей.*", parse_mode="Markdown"
         )
@@ -178,3 +178,4 @@ async def generate_text(message: Message, state: FSMContext):
     await message.answer(response, parse_mode="Markdown")
 
     await state.clear()
+    
