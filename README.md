@@ -44,9 +44,9 @@ To test the bot, I launched it in my TG channel - @tg_neuronet_bot.
 
 3. Create a `.env` file in the project root:
    ```env
-   TOKEN=your_telegram_bot_token
    AI=your_openrouter_api_key
-   CHAT_ID=your_telegram_user_id
+   TOKEN=your_telegram_bot_token
+   CHAT_IDS=your_telegram_user_ids
    ```
 
 4. Initialize the database:
@@ -63,9 +63,9 @@ The bot uses environment variables for configuration. Create a `.env` file with 
 
 | Variable | Description |
 |----------|-------------|
-| `TOKEN` | Telegram bot token obtained from @BotFather |
 | `AI` | OpenRouter API key |
-| `CHAT_ID` | Your Telegram user ID (for admin commands) |
+| `TOKEN` | Telegram bot token obtained from @BotFather |
+| `CHAT_IDS` | Your Telegram user ID (for admin commands) |
 
 ## Project Structure
 
@@ -141,7 +141,7 @@ Telegram-Neuro-Bot/
    ```env
    TOKEN=ваш_токен_телеграм_бота
    AI=ваш_api_ключ_openrouter
-   CHAT_ID=ваш_id_в_телеграм
+   CHAT_IDS=ваши_id_в_телеграм
    ```
 
 4. База данных создастся автоматически при первом запуске бота.
@@ -157,9 +157,9 @@ Telegram-Neuro-Bot/
 
 | Переменная | Описание |
 |------------|----------|
-| `TOKEN` | Токен Телеграм бота от @BotFather |
 | `AI` | API ключ OpenRouter |
-| `CHAT_ID` | Ваш ID пользователя в Телеграм (для команд администратора) |
+| `TOKEN` | Токен Телеграм бота от @BotFather |
+| `CHAT_IDS` | Ваш ID пользователя в Телеграм (для команд администратора) |
 
 ## Структура проекта
 
