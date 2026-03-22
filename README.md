@@ -65,7 +65,7 @@ The bot uses environment variables for configuration. Create a `.env` file with 
 |----------|-------------|
 | `AI` | OpenRouter API key |
 | `TOKEN` | Telegram bot token obtained from @BotFather |
-| `CHAT_IDS` | Your Telegram user ID (for admin commands) |
+| `CHAT_IDS` | Your Telegram users ID (for admin commands) |
 
 ## Project Structure
 
@@ -159,7 +159,7 @@ Telegram-Neuro-Bot/
 |------------|----------|
 | `AI` | API ключ OpenRouter |
 | `TOKEN` | Токен Телеграм бота от @BotFather |
-| `CHAT_IDS` | Ваш ID пользователя в Телеграм (для команд администратора) |
+| `CHAT_IDS` | Ваши ID пользователей в Телеграм (для команд администратора) |
 
 ## Структура проекта
 
