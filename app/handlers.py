@@ -1,21 +1,21 @@
 import os
 
-from aiogram import Router, F
+from aiogram import Router, Bot, F
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
-from app.generation import generate
+from app.generation import generate_text_neuro, generate_image_neuro
 from app.database import (
     add_user,
     is_user_banned,
     ban_user,
     unban_user,
     add_to_context,
-    get_context,
     clear_context,
 )
+from app.utils import img_to_base64, get_context_from_user
 
 from dotenv import load_dotenv
 
@@ -26,6 +26,7 @@ router = Router()
 
 class Generate(StatesGroup):
     text = State()
+    image = State()
 
 
 ADMIN_CHAT_IDS = [int(id) for id in os.getenv("CHAT_IDS").split(", ")]
@@ -146,7 +147,7 @@ async def generate_text(message: Message, state: FSMContext):
             "*Вы заблокированы и не можете использовать этого бота.*",
             parse_mode="Markdown",
         )
-        return False
+        return
 
     await state.set_state(Generate.text)
 
@@ -154,28 +155,49 @@ async def generate_text(message: Message, state: FSMContext):
         "*Генерируется ответ...*", parse_mode="Markdown"
     )
 
-    add_to_context(message.from_user.id, "user", message.text)
+    try:
+        add_to_context(message.from_user.id, "user", message.text)
 
-    context_messages = get_context(message.from_user.id, limit=10)
+        full_prompt = get_context_from_user(message)
+        response = await generate_text_neuro(full_prompt)
 
-    context_text = ""
-    if context_messages:
-        context_text = "Контекст диалога:\n"
-        for role, content in context_messages:
-            if role == "user":
-                context_text += f"Пользователь: {content}\n"
-            else:
-                context_text += f"Ассистент: {content}\n"
-        context_text += "\nТекущий запрос:\n"
+        add_to_context(message.from_user.id, "assistant", response)
 
-    full_prompt = context_text + message.text
+        await loading_message.delete()
+        await message.answer(response)
+    finally:
+        await state.clear()
 
-    response = await generate(full_prompt)
 
-    add_to_context(message.from_user.id, "assistant", response)
+@router.message(F.photo)
+async def generate_text_with_image(message: Message, bot: Bot, state: FSMContext):
+    if is_user_banned(message.from_user.id):
+        await message.answer(
+            "*Вы заблокированы и не можете использовать этого бота.*",
+            parse_mode="Markdown",
+        )
+        return
 
-    await loading_message.delete()
-    await message.answer(response, parse_mode="Markdown")
+    await state.set_state(Generate.image)
 
-    await state.clear()
-    
+    loading_message = await message.answer(
+        "*Генерируется ответ...*", parse_mode="Markdown"
+    )
+
+    try:
+        caption = message.caption or "Опиши изображение"
+
+        add_to_context(message.from_user.id, "user", caption)
+
+        file = await bot.get_file(message.photo[-1].file_id)
+        download_file = await bot.download_file(file.file_path)
+        image_base64 = img_to_base64(download_file)
+
+        response = await generate_image_neuro(caption, image_base64)
+
+        add_to_context(message.from_user.id, "assistant", response)
+
+        await loading_message.delete()
+        await message.answer(response)
+    finally:
+        await state.clear()
