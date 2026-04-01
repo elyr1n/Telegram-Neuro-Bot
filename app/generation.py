@@ -31,7 +31,7 @@ async def generate_image_neuro(prompt: str, image: str):
         return completion.choices[0].message.content
 
     except (BadRequestError, APIStatusError) as e:
-        print(f"Ошибка запроса: {e}")
+        return f"Ошибка запроса: {e}"
 
 
 async def generate_text_neuro(prompt: str):
@@ -48,4 +48,4 @@ async def generate_text_neuro(prompt: str):
         return completion.choices[0].message.content
 
     except (BadRequestError, APIStatusError) as e:
-        print(f"Ошибка запроса: {e}")
+        return f"Ошибка запроса: {e}"
