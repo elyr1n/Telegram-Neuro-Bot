@@ -19,7 +19,7 @@ async def generate_image_neuro(prompt: str, image: str):
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": prompt},
+                        {"type": "text", "text": f"Пиши свой ответ без какого-либо форматирования {prompt}"},
                         {
                             "type": "image_url",
                             "image_url": {"url": f"data:image/jpeg;base64,{image}"},
